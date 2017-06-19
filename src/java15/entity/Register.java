@@ -41,9 +41,9 @@ public class Register {
         {
             CashierStrategy strategy = cashier.strategy(customer.getClass());
             try {
-                work();
-                cashier.giveChange();
-                shop.work();
+                work(); //
+                cashier.giveChange(); //
+                shop.work(); //
             } catch (CashierHasNoChange e) {
                 countNoChange++;
                 totalTime += 60; // если у кассира нет сдачи, найти сдачу у него займет 1 минута
