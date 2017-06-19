@@ -17,6 +17,14 @@ public class Register {
         this.cashier = cashier;
     }
 
+    public void work() throws TapeIsEnded, RegisterIsBroken
+    {
+        if ((random.nextInt(150) + 1) <= 30) // вероятность того, что закончится лента в кассовом аппарате
+            throw new TapeIsEnded("Tape is ended!");
+        if ((random.nextInt(150) + 1) <= 15) // вероятность того, что касса сломаеся
+            throw new RegisterIsBroken("Register is broken!");
+    }
+
     public void newCustomer(Customer customer)
     {
         queue.add(customer);
@@ -25,7 +33,7 @@ public class Register {
     public void run()
     {
         int countBroken = 0, countNoChange = 0, countTapeEnded = 0;
-
+        Shop shop = new Shop();
         int numberOfCustomers = 0;
         int totalTime = 0;
         Customer customer;
@@ -33,16 +41,9 @@ public class Register {
         {
             CashierStrategy strategy = cashier.strategy(customer.getClass());
             try {
-                if ((random.nextInt(150) + 1) <= 60) // вероятность того, что у кассира не будет сдачи
-                    throw new CashierHasNoChange("Cashier has no change!");
-                if ((random.nextInt(150) + 1) <= 30) // вероятность того, что закончится лента в кассовом аппарате
-                    throw new TapeIsEnded("Tape is ended!");
-                if ((random.nextInt(150) + 1) <= 15) // вероятность того, что касса сломаеся
-                    throw new RegisterIsBroken("Register is broken!");
-                if ((random.nextInt(150) + 1) == 1) // вероятность того, что в магазине случится ограбление
-                    throw new ShopRobbery("Shop is robbing now!!!");
-                if ((random.nextInt(150) + 1) <= 2) // вероятность того, что в магазине будет пожар
-                    throw new FireInTheShop("Shop is on fire!!!");
+                work();
+                cashier.giveChange();
+                shop.work();
             } catch (CashierHasNoChange e) {
                 countNoChange++;
                 totalTime += 60; // если у кассира нет сдачи, найти сдачу у него займет 1 минута
